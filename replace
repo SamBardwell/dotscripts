@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+from pathlib import Path
+from sys import argv
+import re
+progname = argv[0]
+
+if len(argv) < 4:
+	print("Invalid Usage")
+	print(f'{progname} [directory] [pattern to replace] [pattern]')
+	
+	exit(1)
+
+pathdir = Path(argv[1])
+patr = argv[2]
+pat = argv[3]
+
+def replace_path(path):
+	if path.is_dir():
+		for entry in path.iterdir():
+			if not entry.is_dir():
+				data = entry.read_text()
+				entry.write_text(re.sub(patr, pat, data))	
+				entry.rename(re.sub(patr, pat, str(entry)))
+
+			replace_path(entry)
+
+replace_path(pathdir)
